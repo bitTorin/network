@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('#like-post').addEventListener('click', like_post);
+    document.querySelector('#like-icon').addEventListener('click', like_post);
 });
 
 function like_post() {

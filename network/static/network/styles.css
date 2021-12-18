@@ -1,3 +1,13 @@
+#icon-empty > #like-icon:hover {
+    cursor: pointer !important;
+    fill: red !important;
+}
+
+#icon-filled > #like-icon:hover {
+    cursor: pointer !important;
+    fill: grey !important;
+}
+
 .list-item {
     border: 1px solid lightgrey;
     border-radius: 5px;
