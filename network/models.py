@@ -10,7 +10,7 @@ class User(AbstractUser):
 class Post(models.Model):
     title = models.CharField(max_length=64)
     body = models.CharField(max_length=500)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    # timestamp = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='post_user')
 
     def __str__(self):
@@ -18,7 +18,7 @@ class Post(models.Model):
 
 class Like(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='like_user')
-    post = models.ForeignKey('User', on_delete=models.CASCADE, related_name='likes')
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='likes')
 
     def __str__(self):
         return f"{self.user}: {self.post}"

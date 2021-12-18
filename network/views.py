@@ -15,7 +15,9 @@ class NewPostForm(forms.Form):
 
 
 def index(request):
-    return render(request, "network/index.html")
+    return render(request, "network/index.html", {
+        "posts": Post.objects.all(),
+    })
 
 
 def login_view(request):
