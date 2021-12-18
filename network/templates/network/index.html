@@ -1,5 +1,26 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+<div class="container">
+    <h3>All Posts</h3>
+    <div class="list-item">
+        <form id="new-post">
+            <div class="form-group"><h5>New Post</h5></div>
+            <textarea class="form-control" id="compose-body" placeholder="Body" style="margin-bottom: 5px"></textarea>
+            <input type="submit" class="btn btn-primary" value="Post"/>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div class="list-item" style="margin: 0px">
+        <h4 id="post-title">Post Title</h4>
+        <br>
+        <p><a href="">Edit</a></p>
+        <p id="post-body">Post Body</p>
+        <p id="post-time" class="text-muted">Timestamp</p>
+        <p id="post-likes">Likes</p>
+        <p id="post-comment">Comment</p>
+    </div>
+</div>
+
 {% endblock %}

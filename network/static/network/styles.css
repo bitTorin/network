@@ -1,0 +1,11 @@
+.list-item {
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin-bottom: 1em;
+    opacity: 85%;
+    padding: 1%;
+}
+
+.list-item > p {
+    margin: 0px;
+}
