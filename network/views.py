@@ -17,7 +17,7 @@ class NewPostForm(forms.Form):
 
 def index(request):
     return render(request, "network/index.html", {
-        "posts": Post.objects.all(),
+        "posts": reversed(Post.objects.all()),
     })
 
 
@@ -82,7 +82,7 @@ def add_post(request):
             post.body = form.cleaned_data["post-body"]
             post.user = request.user.username
             post.timestamp = timezone.now
-            
+
             post.save()
 
             return render(request, "network/index.html")
