@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect,  HttpResponseBadRequ
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
+from django.utils import timezone
 
 from .models import User, Post, Like, Followers
 
@@ -80,7 +81,8 @@ def add_post(request):
             post.title = form.cleaned_data["post-title"]
             post.body = form.cleaned_data["post-body"]
             post.user = request.user.username
-
+            post.timestamp = timezone.now
+            
             post.save()
 
             return render(request, "network/index.html")

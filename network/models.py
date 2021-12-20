@@ -10,7 +10,7 @@ class User(AbstractUser):
 class Post(models.Model):
     title = models.CharField(max_length=64)
     body = models.CharField(max_length=500)
-    # timestamp = models.DateTimeField(auto_now_add=True) default=django.utils.timezone.now
+    timestamp = models.DateTimeField(auto_now_add=True) 
     user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='post_user')
 
     def __str__(self):
