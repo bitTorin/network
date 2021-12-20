@@ -8,6 +8,7 @@ from django.urls import reverse
 from django import forms
 from django.forms import ModelForm
 from django.utils import timezone
+from django.core.paginator import Paginator
 
 from .models import User, Post, Like, Followers
 
@@ -17,10 +18,14 @@ class NewPostForm(forms.Form):
 
 
 def index(request):
-    return render(request, "network/index.html", {
-        "posts": reversed(Post.objects.all()),
-    })
+    posts = Post.objects.order_by('-timestamp')
+    paginator = Paginator(posts, 10) # Show 10 posts per page.
 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'network/index.html', {
+        'page_obj': page_obj
+    })
 
 def login_view(request):
     if request.method == "POST":
@@ -95,3 +100,17 @@ def add_post(request):
         form = NewPostForm()
 
     return HttpResponseRedirect(reverse("index"))
+
+def profile(request, user_name):
+    user = User.objects.get(username = user_name)
+    return render(request, "network/profile.html", {
+        "user": user,
+        "posts": reversed(Post.objects.filter(user = user)),
+    })
+
+@login_required
+def following(request, user):
+    user = User.objects.get(username = user)
+    return render(request, "network/profile.html", {
+        "posts": reversed(Post.user.objects.filter(user = user)),
+    })
