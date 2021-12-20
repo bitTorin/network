@@ -3,24 +3,28 @@
 {% block body %}
 <div class="container">
     <h3>All Posts</h3>
-    <div class="list-item">
-        <form id="new-post">
-            <div class="form-group"><h5>New Post</h5></div>
-            <textarea class="form-control" id="post-body" placeholder="Body" style="margin-bottom: 5px"></textarea>
-            <input type="submit" class="btn btn-primary" value="Post"/>
-        </form>
-    </div>
-</div>
-<div class="container">
+    {% if request.user.is_authenticated %}
+        <div class="list-item">
+            <form id="new-post" action="{% url 'add_post' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group"><h5>New Post</h5></div>
+                <input class="form-control" type="text" id="post-title" placeholder="Title" style="margin-bottom: 5px"></input>
+                <textarea class="form-control" id="post-body" placeholder="Body" style="margin-bottom: 5px"></textarea>
+                <input type="submit" class="btn btn-primary" value="Post"/>
+            </form>
+        </div>
+    {% endif %}
     {% for post in posts %}
     <div class="list-item" style="margin: 0px">
-        <h4 id="post-title">Post Title</h4>
+        <h4 id="post-title" style="margin-bottom: 0px;">{{ post.title }}</h4>
+        <p class="text-muted">Posted by <a href="" style="text-decoration: none;">{{ post.user }}</a> on post.timestamp
+            {% if request.user == post.user %}
+            (<a href="">edit</a>)
+            {% endif %}
+        </p>
         <br>
-        {% if request.user == post.user %}
-            <p><a href="">Edit</a></p>
-        {% endif %}
-        <p id="post-body">{{ post.title }}</p>
-        <p id="post-time" class="text-muted">{{ post.timestamp }}</p>
+        <p id="post-body">{{ post.body}}</p>
+        <br>
         <div>
             {% with likes=post.likes.count %}
                 {% if request.user == post.likes.like_user %}

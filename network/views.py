@@ -11,7 +11,7 @@ from .models import User, Post, Like, Followers
 
 class NewPostForm(forms.Form):
     title = forms.CharField(label="post-title")
-    body = forms.CharField(label="body")
+    body = forms.CharField(label="post-body")
 
 
 def index(request):
@@ -79,10 +79,16 @@ def add_post(request):
             post = Post()
             post.title = form.cleaned_data["post-title"]
             post.body = form.cleaned_data["post-body"]
+            post.user = request.user.username
 
             post.save()
 
-            return HttpResponseRedirect(reverse("index"))
-
+            return render(request, "network/index.html")
+        
+        else:
+            return HttpResponse("Invalid form")
+        
     else:
-        raise Http404("Invalid Request")
+        form = NewPostForm()
+
+        return HttpResponseRedirect(reverse("index"))
