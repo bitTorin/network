@@ -8,8 +8,8 @@
             <form id="new-post" action="{% url 'add_post' %}" method="POST">
                 {% csrf_token %}
                 <div class="form-group"><h5>New Post</h5></div>
-                <input class="form-control" type="text" id="title" placeholder="Title" style="margin-bottom: 5px"></input>
-                <textarea class="form-control" id="body" placeholder="Body" style="margin-bottom: 5px"></textarea>
+                <input class="form-control" type="text" id="new_post_title" name="new_post_title" placeholder="Title" style="margin-bottom: 5px"></input>
+                <textarea class="form-control" id="new_post_body" name="new_post_body" placeholder="Body" style="margin-bottom: 5px"></textarea>
                 <input type="submit" class="btn btn-primary" value="Submit"></input>
             </form>
         </div>
