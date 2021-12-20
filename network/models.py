@@ -24,7 +24,7 @@ class Like(models.Model):
         return f"{self.user}: {self.post}"
 
 class Followers(models.Model):
-    account = models.ForeignKey('User', on_delete=models.CASCADE, related_name='account')
+    account = models.ForeignKey('User', on_delete=models.CASCADE, related_name='following')
     follower = models.ForeignKey('User', on_delete=models.CASCADE, related_name='followers')
 
     def __str__(self):

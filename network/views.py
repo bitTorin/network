@@ -109,8 +109,14 @@ def profile(request, user_name):
     })
 
 @login_required
-def following(request, user):
-    user = User.objects.get(username = user)
-    return render(request, "network/profile.html", {
-        "posts": reversed(Post.user.objects.filter(user = user)),
+def following(request):
+    user = User.objects.get(username = request.user.username)
+    
+    posts = user.following.all().order_by('-timestamp')
+    paginator = Paginator(posts, 10) # Show 10 posts per page.
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'network/following.html', {
+        'page_obj': page_obj
     })
