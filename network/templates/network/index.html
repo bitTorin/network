@@ -17,7 +17,7 @@
     {% for post in posts %}
     <div class="list-item" style="margin: 0px">
         <h4 id="post-title" style="margin-bottom: 0px;">{{ post.title }}</h4>
-        <p class="text-muted">Posted by <a href="" style="text-decoration: none;">{{ post.user }}</a> on post.timestamp
+        <p class="text-muted">Posted by <a href="" style="text-decoration: none;">{{ post.user }}</a> on {{ post.timestamp }}
             {% if request.user == post.user %}
             (<a href="">edit</a>)
             {% endif %}
