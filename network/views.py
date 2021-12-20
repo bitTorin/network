@@ -6,13 +6,14 @@ from django.http import HttpResponse, HttpResponseRedirect,  HttpResponseBadRequ
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
+# from django.forms import ModelForm
 from django.utils import timezone
 
 from .models import User, Post, Like, Followers
 
 class NewPostForm(forms.Form):
-    title = forms.CharField(label="post-title")
-    body = forms.CharField(label="post-body")
+    title = forms.CharField(label="title")
+    body = forms.CharField(label="body")
 
 
 def index(request):
@@ -78,17 +79,17 @@ def add_post(request):
         form = NewPostForm(request.POST)
         if form.is_valid():
             post = Post()
-            post.title = form.cleaned_data["post-title"]
-            post.body = form.cleaned_data["post-body"]
-            post.user = request.user.username
+            post.title = form.cleaned_data["title"]
+            post.body = form.cleaned_data["body"]
+            post.user = User.objects.get(username = request.user.username)
             post.timestamp = timezone.now
 
             post.save()
 
-            return render(request, "network/index.html")
+            return HttpResponseRedirect(reverse("index"))
         
         else:
-            return HttpResponse("Invalid form")
+            return HttpResponse(form.errors)
         
     else:
         form = NewPostForm()
