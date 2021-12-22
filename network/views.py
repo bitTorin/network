@@ -9,6 +9,8 @@ from django import forms
 from django.forms import ModelForm
 from django.utils import timezone
 from django.core.paginator import Paginator
+import json
+from django.http import JsonResponse
 
 from .models import User, Post, Like, Followers
 
@@ -79,7 +81,7 @@ def register(request):
         return render(request, "network/register.html")
 
 @login_required
-def add_post(request):
+def post(request):
     if request.method == "POST":
         form = NewPostForm(request.POST)
         if form.is_valid():
@@ -120,3 +122,18 @@ def following(request):
     return render(request, 'network/following.html', {
         'page_obj': page_obj
     })
+
+@login_required
+def edit_post(request, post_id):
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        
+        # Query for requested post - make sure
+        post = Post.objects.get(pk=post_id, user=request.user)
+
+        # Update post
+        post.body = data.get('body')
+        post.save()
+
+        # Return positive response
+        return HttpResponse(status=201)

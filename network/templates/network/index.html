@@ -1,11 +1,12 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
 <div class="container justify-content-center">
     <h3>All Posts</h3>
     {% if request.user.is_authenticated %}
         <div class="list-item">
-            <form id="new-post" action="{% url 'add_post' %}" method="POST">
+            <form id="new-post" action="{% url 'post' %}" method="POST">
                 {% csrf_token %}
                 <div class="form-group"><h5>New Post</h5></div>
                 <input class="form-control" type="text" id="new_post_title" name="new_post_title" placeholder="Title" style="margin-bottom: 5px"></input>
@@ -15,15 +16,15 @@
         </div>
     {% endif %}
     {% for post in page_obj %}
-    <div class="list-item" style="margin: 0px; margin-bottom: 5px;">
+    <div id="{{ post.id }}" class="list-item" style="margin: 0px; margin-bottom: 5px;">
+        {% if request.user == post.user %}
+            <button id="edit-post" type="button" class="btn btn-link" style="display: block; float: right;" onclick="edit_post('{{ post.id }}')">Edit</button>
+            <button id="save-post" type="button" class="btn btn-link" style="display: none; float: right;" onclick="save_post('{{ post.id }}')">Save</button>
+        {% endif %}
         <h4 id="post-title" style="margin-bottom: 0px;">{{ post.title }}</h4>
-        <p class="text-muted">Posted by <a href="{% url 'profile' post.user.username %}" style="text-decoration: none;">{{ post.user }}</a> on {{ post.timestamp }}
-            {% if request.user == post.user %}
-            (<a id="edit-post" href="">edit</a>)
-            {% endif %}
-        </p>
+        <p class="text-muted">Posted by <a href="{% url 'profile' post.user.username %}" style="text-decoration: none;">{{ post.user }}</a> on {{ post.timestamp }}</p>
         <br>
-        <p id="post-body">{{ post.body}}</p>
+        <p id="post-body" value="{{ post.body }}">{{ post.body}}</p>
         <br>
         <div>
             {% with likes=post.likes.count %}
@@ -48,15 +49,10 @@
                 {% endif %}
             {% endwith %}
         </div>
-        <p id="post-comment">Comment</p>
-        <form id="new-post">
-            <textarea class="form-control" id="comment-body" placeholder="Enter Comment Here" style="margin-bottom: 5px"></textarea>
-            <input type="submit" class="btn btn-primary" value="Post"/>
-        </form>
     </div>
     {% endfor %}
 </div>
-<nav aria-label="page-nav">
+<nav aria-label="page-nav" style="margin-top: 20px;">
     <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}
             <li class="page-item">
@@ -91,4 +87,11 @@
     </ul>
 </nav>
 
+{% endblock %}
+
+{% block script %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="{% static 'network/edit.js' %}"></script>
+    <script src="{% static 'network/save.js' %}"></script>
+    <script src="{% static 'network/authenticate.js' %}"></script>
 {% endblock %}
