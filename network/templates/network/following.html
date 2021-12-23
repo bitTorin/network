@@ -37,10 +37,15 @@
                         </svg>
                     </div>
                     <p id="likeCount" style="display: inline-block" value="{{ like_count }}">{{ like_count }}</p>
-                {% endif %} 
+                {% endif %}
             {% endwith %}
         </div>
     </div>
+    {% empty %}
+    <div class="h-100 row align-items-center">
+        <h6 class="col">You aren't currently following any profiles</h6>
+    </div>
+    {% endfor %}
     <nav aria-label="page-nav">
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
@@ -72,14 +77,9 @@
                 <li class="page-item disabled">
                     <a class="page-link" aria-disabled="true" href="">Next</a>
                 </li>
-            {% endif %}        
+            {% endif %}
         </ul>
     </nav>
-    {% empty %}
-    <div class="h-100 row align-items-center">
-        <h6 class="col">You aren't currently following any profiles</h6>
-    </div>
-    {% endfor %}
 </div>
 {% endblock %}
 
