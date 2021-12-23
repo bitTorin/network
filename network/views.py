@@ -127,14 +127,6 @@ def profile(request, user_name):
 @login_required
 def following(request):
     active_user = User.objects.get(username = request.user)
-    # following = User.account(user = active_user)
-    # following_list = active_user.account.all()
-    # post_list = []
-    # for i in following_list:
-    #     p = Post.objects.filter(user = i.account).get(id)
-    #     # post = 
-    #     post_list.append(p)
-    # following_list = User.following.filter(follower = active_user).all()
 
      # Get all posts from users that current user follows
     posts = [users.get_followed_posts() for users in active_user.account.all()]
@@ -156,10 +148,17 @@ def follow(request, profile_id):
     profile = User.objects.get(pk=profile_id)
     user = request.user.username
 
+    
     if user in profile.followers.all():
-        return
+
+        # Return negative response
+        return HttpResponse("Post already liked", status=404)
+
     else:
+        
+        # Return positive response
         profile.followers.add(user)
+        return HttpResponse(status=201)
 
 @login_required
 def unfollow(request, profile_id):

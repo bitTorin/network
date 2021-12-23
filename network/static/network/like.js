@@ -4,9 +4,6 @@
 
 function like_post(post_id, user) {
 
-  console.log(post_id)
-  console.log(user)
-
   // Concert username to string
   username = user.toString()
 
@@ -15,14 +12,8 @@ function like_post(post_id, user) {
 
   let likeDiv = PostDiv.querySelector("#likes");
 
-  // // Show empty icon and hide filled icon
-  // likeDiv.querySelector('#icon-filled').style.display = 'none';
-  // likeDiv.querySelector('#icon-empty').style.display = 'inline-block';
-
   let likeCount = likeDiv.querySelector('#likeCount');
   let likes = parseInt(likeCount.getAttribute('value'), 10);
-  
-  console.log(likes)
 
   // Generate CSRF token
   let csrftoken = getCookie('csrftoken');
@@ -69,25 +60,13 @@ function like_post(post_id, user) {
 
 function unlike_post(post_id, user) {
 
-  console.log(post_id)
-  console.log(user)
-
-  // Concert username to string
-  // username = user.toString()
-
   // Get HTML contents
   let PostDiv = document.getElementById(`${post_id}`);
 
   let likeDiv = PostDiv.querySelector("#likes");
 
-  // // Show empty icon and hide filled icon
-  // likeDiv.querySelector('#icon-filled').style.display = 'inline-block';
-  // likeDiv.querySelector('#icon-empty').style.display = 'none';
-
   let likeCount = likeDiv.querySelector('#likeCount');
   let likes = parseInt(likeCount.getAttribute('value'), 10);
-  
-  console.log(likes)
 
   // Generate CSRF token
   let csrftoken = getCookie('csrftoken');
