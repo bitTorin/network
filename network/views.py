@@ -10,6 +10,7 @@ from django.forms import ModelForm
 from django.utils import timezone
 from django.core.paginator import Paginator
 import json
+from itertools import chain
 
 
 from .models import User, Post, Like, Followers
@@ -125,14 +126,28 @@ def profile(request, user_name):
 
 @login_required
 def following(request):
-    active_user = request.user
-    following_list = User.following.filter(follower = active_user).all()
-    posts = Post.objects.filter(user__in=[following_list]).order_by('-timestamp')
-    paginator = Paginator(posts, 10) # Show 10 posts per page.
+    active_user = User.objects.get(username = request.user)
+    # following = User.account(user = active_user)
+    # following_list = active_user.account.all()
+    # post_list = []
+    # for i in following_list:
+    #     p = Post.objects.filter(user = i.account).get(id)
+    #     # post = 
+    #     post_list.append(p)
+    # following_list = User.following.filter(follower = active_user).all()
+
+     # Get all posts from users that current user follows
+    posts = [users.get_followed_posts() for users in active_user.account.all()]
+
+    # Chain posts together
+    posts = list(chain(*posts))
+
+    # Show 10 posts per page.
+    paginator = Paginator(posts, 10) 
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'network/profile.html', {
+    return render(request, 'network/following.html', {
         "page_obj": page_obj
     })
 

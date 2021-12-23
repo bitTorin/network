@@ -22,7 +22,12 @@ class Followers(models.Model):
     follower = models.ForeignKey('User', on_delete=models.CASCADE, related_name='account')
 
     def __str__(self):
-        return f"{self.account}: {self.follower}"
+        return f"{self.account} follows {self.follower}"
+
+    def get_followed_posts(self):
+        """ Get posts from users the current user follows """
+
+        return self.account.post_user.order_by("-timestamp").all()
 
 class Like(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
