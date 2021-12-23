@@ -105,10 +105,15 @@ def post(request):
     return HttpResponseRedirect(reverse("index"))
 
 def profile(request, user_name):
-    user = User.objects.get(username = user_name)
-    return render(request, "network/profile.html", {
-        "user": user,
-        "posts": reversed(Post.objects.filter(user = user)),
+    profile = User.objects.get(username = user_name)
+    posts = Post.objects.filter(user = profile).order_by('-timestamp')
+    paginator = Paginator(posts, 10) # Show 10 posts per page.
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'network/profile.html', {
+        "profile": profile,
+        "page_obj": page_obj
     })
 
 @login_required
