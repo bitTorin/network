@@ -29,7 +29,6 @@ function save_post(post_id) {
             postDiv.querySelector('#edit-post').style.display = 'block';
             postDiv.querySelector('#save-post').style.display = 'none';
             postBody.innerHTML = `${newBody}`;
-            postBody.attr("value") = `${newBody}`;
             console.log(`Post ${post_id} edited successfully`);
         }
         

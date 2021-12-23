@@ -188,12 +188,12 @@ def unfollow(request):
             return HttpResponse("User already unfollowed", status=404)
 
 @login_required
-def edit_post(request):
+def edit_post(request, post_id):
     if request.method == "PUT":
         data = json.loads(request.body)
         
         # Query for requested post - make sure
-        post = Post.objects.get(pk=data.get('post_id'), user=request.user)
+        post = Post.objects.get(pk=post_id, user=request.user)
 
         # Update post
         post.body = data.get('body')
