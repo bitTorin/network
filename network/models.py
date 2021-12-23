@@ -18,8 +18,8 @@ class Post(models.Model):
         return f"{self.title}"
 
 class Followers(models.Model):
-    account = models.ForeignKey('User', on_delete=models.CASCADE, related_name='following')
-    follower = models.ForeignKey('User', on_delete=models.CASCADE, related_name='followers')
+    account = models.ForeignKey('User', on_delete=models.CASCADE, related_name='followers')
+    follower = models.ForeignKey('User', on_delete=models.CASCADE, related_name='account')
 
     def __str__(self):
         return f"{self.account}: {self.follower}"

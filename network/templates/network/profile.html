@@ -5,18 +5,18 @@
 <div class="container justify-content-center">
     <h1 class="align-middle" style="display: inline-block">{{ profile.username }}</h1>
     {% if request.user.is_authenticated %}
-        {% if request.user != profile.username %}
-            {% if request.user in profile.followers %}
-                <button id="unfollow" type="button" class="btn btn-secondary btn-sm" display="inline-block">Unfollow</button>
+        {% if request.user != profile %}
+            {% if request.user in followers %}
+                <button id="unfollow" href="{% url 'unfollow' profile.id %}" type="button" class="btn btn-secondary btn-sm" display="inline-block">Unfollow</button>
             {% else %}
-                <button id="follow" type="button" class="btn btn-outline-secondary btn-sm" display="inline-block">Follow</button>
+                <button id="follow" href="{% url 'follow' profile.id %}" type="button" class="btn btn-outline-secondary btn-sm" display="inline-block">Follow</button>
             {% endif %}
         {% endif %}
     {% endif %}
     <p class="text-muted">Member since {{ profile.date_joined|date }}</p>
     <div style="display: block">
         <p style="display: inline-block">{{ profile.followers.count }} followers</p>
-        <p style="display: inline-block">{{ profile.following.count }} following</p>
+        <p style="display: inline-block">{{ profile.account.count }} following</p>
     </div>
     <br>
     <h3>Recent Posts</h3>

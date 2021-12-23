@@ -10,7 +10,6 @@ from django.forms import ModelForm
 from django.utils import timezone
 from django.core.paginator import Paginator
 import json
-from django.http import JsonResponse
 
 
 from .models import User, Post, Like, Followers
@@ -107,27 +106,57 @@ def post(request):
 def profile(request, user_name):
     profile = User.objects.get(username = user_name)
     posts = Post.objects.filter(user = profile).order_by('-timestamp')
+    
+    follower_list = profile.followers.all()
+    followers = []
+    for i in follower_list:
+        f = i.follower
+        followers.append(f)
+    
     paginator = Paginator(posts, 10) # Show 10 posts per page.
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'network/profile.html', {
         "profile": profile,
+        "followers": followers,
         "page_obj": page_obj
     })
 
 @login_required
 def following(request):
-    user = User.objects.get(username = request.user.username)
-    
-    posts = user.following.all().order_by('-timestamp')
+    active_user = request.user
+    following_list = User.following.filter(follower = active_user).all()
+    posts = Post.objects.filter(user__in=[following_list]).order_by('-timestamp')
     paginator = Paginator(posts, 10) # Show 10 posts per page.
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'network/following.html', {
-        'page_obj': page_obj
+    return render(request, 'network/profile.html', {
+        "page_obj": page_obj
     })
+
+@login_required
+def follow(request, profile_id):
+    profile = User.objects.get(pk=profile_id)
+    user = request.user.username
+
+    if user in profile.followers.all():
+        return
+    else:
+        profile.followers.add(user)
+
+@login_required
+def unfollow(request, profile_id):
+    profile = User.objects.get(pk=profile_id)
+    user = request.user.username
+    followers_list = profile.followers.all()
+
+    if user in followers_list:
+        profile.followers.remove(user)
+
+    else:
+        return
 
 @login_required
 def edit_post(request, post_id):
@@ -172,7 +201,6 @@ def unlike_post(request):
         data = json.loads(request.body)
         post_id = data.get('post_id')
         unliked_post = Post.objects.get(pk=post_id)
-        like_count = unliked_post.liked_by.count()
 
         # If user already unliked post
         if user not in unliked_post.liked_by.all():
