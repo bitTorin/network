@@ -1,9 +1,9 @@
-#empty-like-icon:hover {
+#empty:hover {
     cursor: pointer !important;
     fill: red !important;
 }
 
-#filled-like-icon:hover {
+#filled:hover {
     cursor: pointer !important;
     fill: grey !important;
 }

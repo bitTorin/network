@@ -6,5 +6,8 @@ from .models import User, Post
 class PostAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "timestamp", "title", "body")
 
-admin.site.register(User)
+class UserAdmin(admin.ModelAdmin):
+    filter_horizontal = ("liked_posts",)
+
+admin.site.register(User, UserAdmin)
 admin.site.register(Post, PostAdmin)

@@ -12,7 +12,7 @@ from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
 
-from .models import User, Post, Like, Followers
+from .models import User, Post, Followers
 
 class NewPostForm(forms.Form):
     new_post_title = forms.CharField(label="new_post_title")
@@ -129,7 +129,7 @@ def edit_post(request, post_id):
         data = json.loads(request.body)
         
         # Query for requested post - make sure
-        post = Post.objects.get(pk=post_id, user=request.user)
+        post = Post.objects.get(pk=data.get('post_id'), user=request.user)
 
         # Update post
         post.body = data.get('body')
@@ -137,3 +137,51 @@ def edit_post(request, post_id):
 
         # Return positive response
         return HttpResponse(status=201)
+
+@login_required
+def like_post(request):
+    if request.method == "POST":
+        user = request.user
+        data = json.loads(request.body)
+        post_id = data.get('post_id')
+        post = Post.objects.get(pk=post_id)
+        
+        try:
+            # See if user already liked post
+            user_list = post.liked_by_set.all()
+            if user_list.contains(user):
+
+                # Return negative response
+                return HttpResponse("Post already liked", status=404)
+            
+        except:
+            
+            post.liked_by = user
+            post.save()
+
+            # Return positive response
+            return HttpResponse(status=201)
+
+            
+
+
+# @login_required
+# def unlike_post(request):
+#     if request.method == "POST":
+#         user = json.loads(request.user)
+#         post = json.loads(request.post_id)
+
+#         try:
+#             like = Like.objects.filter(post = post, user=user).get
+#             like.delete()
+
+#             # Return positive response
+#             return HttpResponse(status=201)
+
+#         except Like.DoesNotExist:
+
+#             # Return positive response
+#             return HttpResponse("Post not liked", status=404)
+
+        
+
