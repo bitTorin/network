@@ -12,7 +12,8 @@ from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
 
-from .models import User, Post, Followers
+
+from .models import User, Post, Like, Followers
 
 class NewPostForm(forms.Form):
     new_post_title = forms.CharField(label="new_post_title")
@@ -144,44 +145,42 @@ def like_post(request):
         user = request.user
         data = json.loads(request.body)
         post_id = data.get('post_id')
-        post = Post.objects.get(pk=post_id)
+        liked_post = Post.objects.get(pk=post_id)
         
-        try:
-            # See if user already liked post
-            user_list = post.liked_by_set.all()
-            if user_list.contains(user):
+        # If user already liked post
+        if user in liked_post.liked_by.all():
 
-                # Return negative response
-                return HttpResponse("Post already liked", status=404)
+            # Return negative response
+            return HttpResponse("Post already liked", status=404)
             
-        except:
-            
-            post.liked_by = user
-            post.save()
+        # If not, like post
+        else:
+            liked_post.liked_by.add(user)
 
             # Return positive response
             return HttpResponse(status=201)
 
-            
+@login_required
+def unlike_post(request):
+    if request.method == "POST":
+        user = request.user
+        data = json.loads(request.body)
+        post_id = data.get('post_id')
+        unliked_post = Post.objects.get(pk=post_id)
+        like_count = unliked_post.liked_by.count()
 
+        # If user already unliked post
+        if user not in unliked_post.liked_by.all():
 
-# @login_required
-# def unlike_post(request):
-#     if request.method == "POST":
-#         user = json.loads(request.user)
-#         post = json.loads(request.post_id)
+            # Return negative response
+            return HttpResponse("Post already unliked", status=404)
 
-#         try:
-#             like = Like.objects.filter(post = post, user=user).get
-#             like.delete()
+        # If not, unlike post
+        else:
+            unliked_post.liked_by.remove(user)
 
-#             # Return positive response
-#             return HttpResponse(status=201)
-
-#         except Like.DoesNotExist:
-
-#             # Return positive response
-#             return HttpResponse("Post not liked", status=404)
+            # Return positive response
+            return HttpResponse(status=201)
 
         
 

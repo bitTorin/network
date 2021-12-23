@@ -85,7 +85,7 @@ function unlike_post(post_id, user) {
   // likeDiv.querySelector('#icon-empty').style.display = 'none';
 
   let likeCount = likeDiv.querySelector('#likeCount');
-  let likes = int(likeCount.getAttribute('value'));
+  let likes = parseInt(likeCount.getAttribute('value'), 10);
   
   console.log(likes)
 
@@ -109,7 +109,7 @@ function unlike_post(post_id, user) {
           // Hide empty icon and show filled icon
           likeDiv.querySelector('#icon-filled').style.display = 'none';
           likeDiv.querySelector('#icon-empty').style.display = 'inline-block';
-          
+
           // Update like count
           likeCount.innerHTML = likes - 1;
 

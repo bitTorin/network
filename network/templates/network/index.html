@@ -28,7 +28,7 @@
         <br>
         <div id="likes" style="display: block;">
             {% with user=request.user like_count=post.liked_by.count%}
-                {% if post in user.liked_posts %}
+                {% if user in post.liked_by.all %}
                     <div id="icon-filled" onclick="unlike_post('{{ post.id }}','{{ request.user }}')" style="display: inline-block;">
                         <svg id="filled" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
