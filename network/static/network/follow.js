@@ -1,62 +1,89 @@
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('#follow').addEventListener('click', follow);
-    document.querySelector('#unfollow').addEventListener('click', unfollow);
-});
-
-function follow() {
-
-      // Show the mailbox and hide other views
-    document.querySelector('#follow').style.display = 'block';
-    document.querySelector('#unfollow').style.display = 'none';
-    
-    // Pass info to API
-    fetch('/profile', {
-        method: 'POST',
-        body: JSON.stringify({
-            // TODO
-        })
-      })
-      .then(response => response.json())
+function follow(profile) {
+  
+  // Assign parent div to variable
+  let followDiv = document.querySelector("#follow-status");
       
-      .then(result => {
-        // Print result
-        console.log(result);
-      })
-    
-      // Re-load likes TODO - FUNCTION NEEDED
-      .then(load_follow('post'))
+  // Generate CSRF token
+  let csrftoken = getCookie('csrftoken');
+
+  // Send POST request
+  fetch(`/follow`, {
+    method: "POST",
+    body: JSON.stringify({
+      profile: profile,
+        
+    }),
+    headers: {"X-CSRFToken": csrftoken}
+  })
+
+  .then(async(response) => {
+      // If successful, update post
+      if (response.status === 201) {
+          
+          // Hide empty icon and show filled icon
+          followDiv.querySelector('#follow').style.display = 'none';
+          followDiv.querySelector('#unfollow').style.display = 'inline-block';
+
+          // Success message
+          console.log(`User ${profile} followed successfully`);
+      }
       
-      // Catch errors
-      .catch(error => {
-        console.log('Error:', error);
-      });
-    
-      return false;
+      // If error, alert and reload the page
+      else {
+          let msg = await response.json();
+
+          throw new Error(msg.error);                        
+      }
+  })
+
+  // Catch errors
+  .catch(error => {
+  console.log('Error:', error);
+  });
+  return false;
 }
 
-function unfollow() {
+function unfollow(profile) {
+
+  // Assign parent div to variable
+  let followDiv = document.querySelector("#follow-status");
     
-  // Pass info to API
-  fetch('/profile', {
-      method: 'POST',
-      body: JSON.stringify({
-          // TODO
-      })
-    })
-    .then(response => response.json())
-    
-    .then(result => {
-      // Print result
-      console.log(result);
-    })
-  
-    // Re-load likes TODO - FUNCTION NEEDED
-    .then(load_follow('post'))
-    
-    // Catch errors
-    .catch(error => {
-      console.log('Error:', error);
-    });
-  
-    return false;
+  // Generate CSRF token
+  let csrftoken = getCookie('csrftoken');
+
+  // Send POST request
+  fetch(`/unfollow`, {
+    method: "POST",
+    body: JSON.stringify({
+      profile: profile,
+        
+    }),
+    headers: {"X-CSRFToken": csrftoken}
+  })
+
+  .then(async(response) => {
+      // If successful, update post
+      if (response.status === 201) {
+          
+          // Hide empty icon and show filled icon
+          followDiv.querySelector('#follow').style.display = 'inline-block';
+          followDiv.querySelector('#unfollow').style.display = 'none';
+
+          // Success message
+          console.log(`User ${profile} unfollowed successfully`);
+      }
+      
+      // If error, alert and reload the page
+      else {
+          let msg = await response.json();
+
+          throw new Error(msg.error);                        
+      }
+  })
+
+  // Catch errors
+  .catch(error => {
+  console.log('Error:', error);
+  });
+  return false;
 }

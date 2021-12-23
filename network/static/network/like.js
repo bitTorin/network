@@ -1,11 +1,4 @@
-// document.addEventListener('DOMContentLoaded', function() {
-//     document.querySelector('#empty-like-icon').addEventListener('click', like_post);
-// });
-
-function like_post(post_id, user) {
-
-  // Concert username to string
-  username = user.toString()
+function like_post(post_id) {
 
   // Get HTML contents
   let PostDiv = document.getElementById(`${post_id}`);
@@ -58,7 +51,7 @@ function like_post(post_id, user) {
   return false;
 }
 
-function unlike_post(post_id, user) {
+function unlike_post(post_id) {
 
   // Get HTML contents
   let PostDiv = document.getElementById(`${post_id}`);

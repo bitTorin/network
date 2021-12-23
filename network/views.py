@@ -144,36 +144,51 @@ def following(request):
     })
 
 @login_required
-def follow(request, profile_id):
-    profile = User.objects.get(pk=profile_id)
-    user = request.user.username
-
-    
-    if user in profile.followers.all():
-
-        # Return negative response
-        return HttpResponse("Post already liked", status=404)
-
-    else:
+def follow(request):
+    if request.method == "POST":
+        user = request.user
+        data = json.loads(request.body)
+        profile = data.get('profile')
+        target = User.objects.get(username = profile)
         
-        # Return positive response
-        profile.followers.add(user)
-        return HttpResponse(status=201)
+        if user in target.followers.all():
+            # Return negative response
+            return HttpResponse("User already followed", status=404)
+
+        else:
+            
+            # Save model instance of follow
+            follow = Followers()
+            follow.account = target
+            follow.follower = user
+            follow.save()
+
+            # Return positive response
+            return HttpResponse(status=201)
 
 @login_required
-def unfollow(request, profile_id):
-    profile = User.objects.get(pk=profile_id)
-    user = request.user.username
-    followers_list = profile.followers.all()
+def unfollow(request):
+    if request.method == "POST":
+        user = request.user
+        data = json.loads(request.body)
+        profile = data.get('profile')
+        target = User.objects.get(username = profile)
+        unfollow_obj = Followers.objects.filter(account = target).filter(follower = user)
+        
+        if unfollow_obj.exists:
+            
+            # Delete model instance of follow
+            unfollow_obj.delete()
 
-    if user in followers_list:
-        profile.followers.remove(user)
+            # Return positive response
+            return HttpResponse(status=201)
 
-    else:
-        return
+        else:
+            # Return negative response
+            return HttpResponse("User already unfollowed", status=404)
 
 @login_required
-def edit_post(request, post_id):
+def edit_post(request):
     if request.method == "PUT":
         data = json.loads(request.body)
         

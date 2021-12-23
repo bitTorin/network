@@ -2,14 +2,16 @@
 {% load static %}
 
 {% block body %}
-<div class="container justify-content-center">
+<div id="follow-status" class="container justify-content-center">
     <h1 class="align-middle" style="display: inline-block">{{ profile.username }}</h1>
     {% if request.user.is_authenticated %}
         {% if request.user != profile %}
             {% if request.user in followers %}
-                <button id="unfollow" href="{% url 'unfollow' profile.id %}" type="button" class="btn btn-secondary btn-sm" display="inline-block">Unfollow</button>
+                <button id="unfollow" href="{% url 'unfollow' %}" type="button" class="btn btn-secondary btn-sm" style="display: inline-block" onclick="unfollow('{{ profile.username }}')">Unfollow</button>
+                <button id="follow" href="{% url 'follow' %}" type="button" class="btn btn-outline-secondary btn-sm" style="display: none" onclick="follow('{{ profile.username }}')">Follow</button>
             {% else %}
-                <button id="follow" href="{% url 'follow' profile.id %}" type="button" class="btn btn-outline-secondary btn-sm" display="inline-block">Follow</button>
+                <button id="follow" href="{% url 'follow' %}" type="button" class="btn btn-outline-secondary btn-sm" style="display: inline-block" onclick="follow('{{ profile.username }}')">Follow</button>
+                <button id="unfollow" href="{% url 'unfollow' %}" type="button" class="btn btn-outline-secondary btn-sm" style="display: none" onclick="unfollow('{{ profile.username }}')">Unfollow</button>
             {% endif %}
         {% endif %}
     {% endif %}
@@ -34,24 +36,24 @@
         <div id="likes" style="display: block;">
             {% with user=request.user like_count=post.liked_by.count%}
                 {% if user in post.liked_by.all %}
-                    <div id="icon-filled" onclick="unlike_post('{{ post.id }}','{{ request.user }}')" style="display: inline-block;">
+                    <div id="icon-filled" onclick="unlike_post('{{ post.id }}')" style="display: inline-block;">
                         <svg id="filled" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                         </svg>
                     </div>
-                    <div id="icon-empty" onclick="like_post('{{ post.id }}','{{ request.user }}')" style="display: none;">
+                    <div id="icon-empty" onclick="like_post('{{ post.id }}')" style="display: none;">
                         <svg id="empty" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="grey" class="bi bi-heart" viewBox="0 0 16 16">
                             <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
                         </svg>
                     </div>
                     <p id="likeCount" style="display: inline-block" value="{{ like_count }}">{{ like_count }}</p>
                 {% else %}
-                    <div id="icon-empty" onclick="like_post('{{ post.id }}','{{ request.user }}')" style="display: inline-block;">
+                    <div id="icon-empty" onclick="like_post('{{ post.id }}')" style="display: inline-block;">
                         <svg id="empty" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="grey" class="bi bi-heart" viewBox="0 0 16 16">
                             <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
                         </svg>
                     </div>
-                    <div id="icon-filled" onclick="unlike_post('{{ post.id }}','{{ request.user }}')" style="display: none;">
+                    <div id="icon-filled" onclick="unlike_post('{{ post.id }}')" style="display: none;">
                         <svg id="filled" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                         </svg>
@@ -105,5 +107,6 @@
     <script src="{% static 'network/edit.js' %}"></script>
     <script src="{% static 'network/save.js' %}"></script>
     <script src="{% static 'network/like.js' %}"></script>
+    <script src="{% static 'network/follow.js' %}"></script>
     <script src="{% static 'network/authenticate.js' %}"></script>
 {% endblock %}
